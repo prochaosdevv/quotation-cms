@@ -1,8 +1,10 @@
 "use client"
 
 import { useState } from "react"
+import Link from "next/link"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
 
 type Quote = {
   id: number
@@ -23,7 +25,17 @@ export default function QuoteList() {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-4">Quote List</h1>
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="text-3xl font-bold">Quote List</h1>
+        <div className="space-x-2">
+          <Link href="/">
+            <Button variant="outline">Back to Dashboard</Button>
+          </Link>
+          <Link href="/quotes/create">
+            <Button>Create New Quote</Button>
+          </Link>
+        </div>
+      </div>
       <Input
         type="text"
         placeholder="Search by customer name"

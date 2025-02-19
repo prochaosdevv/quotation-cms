@@ -6,6 +6,9 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Label } from "@/components/ui/label"
+import Link from "next/link"
 
 type LineItem = {
   code: string
@@ -30,6 +33,9 @@ export default function LineItemManagement() {
     plant: "",
     publication_price: 0,
   })
+  const [searchTerm, setSearchTerm] = useState("")
+  const [currentPage, setCurrentPage] = useState(1)
+  const itemsPerPage = 10
 
   const addLineItem = () => {
     if (newItem.code && newItem.description) {
@@ -72,64 +78,116 @@ export default function LineItemManagement() {
     }
   }
 
+  const filteredItems = lineItems.filter(
+    (item) =>
+      item.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.category.toLowerCase().includes(searchTerm.toLowerCase()),
+  )
+
+  const pageCount = Math.ceil(filteredItems.length / itemsPerPage)
+  const displayedItems = filteredItems.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-4">Line Item Management</h1>
-      <div className="mb-4 grid grid-cols-2 gap-2">
-        <Input
-          type="text"
-          placeholder="Code"
-          value={newItem.code}
-          onChange={(e) => setNewItem({ ...newItem, code: e.target.value })}
-        />
-        <Input
-          type="text"
-          placeholder="Category"
-          value={newItem.category}
-          onChange={(e) => setNewItem({ ...newItem, category: e.target.value })}
-        />
-        <Input
-          type="text"
-          placeholder="Description"
-          value={newItem.description}
-          onChange={(e) => setNewItem({ ...newItem, description: e.target.value })}
-        />
-        <Input
-          type="text"
-          placeholder="Unit"
-          value={newItem.unit}
-          onChange={(e) => setNewItem({ ...newItem, unit: e.target.value })}
-        />
-        <Input
-          type="number"
-          placeholder="Labour"
-          value={newItem.labour}
-          onChange={(e) => setNewItem({ ...newItem, labour: Number.parseFloat(e.target.value) })}
-        />
-        <Input
-          type="text"
-          placeholder="Material"
-          value={newItem.material}
-          onChange={(e) => setNewItem({ ...newItem, material: e.target.value })}
-        />
-        <Input
-          type="text"
-          placeholder="Plant"
-          value={newItem.plant}
-          onChange={(e) => setNewItem({ ...newItem, plant: e.target.value })}
-        />
-        <Input
-          type="number"
-          placeholder="Publication Price"
-          value={newItem.publication_price}
-          onChange={(e) => setNewItem({ ...newItem, publication_price: Number.parseFloat(e.target.value) })}
-        />
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="text-3xl font-bold">Line Item Management</h1>
+        <Link href="/">
+          <Button variant="outline">Back to Dashboard</Button>
+        </Link>
       </div>
       <div className="mb-4">
-        <Button onClick={addLineItem} className="mr-2">
-          Add Item
-        </Button>
-        <Input type="file" onChange={importLineItems} accept=".csv" className="inline-block" />
+        <Input
+          type="text"
+          placeholder="Search items..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="mb-2"
+        />
+        <div className="flex space-x-2">
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button>Add New Item</Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Add New Line Item</DialogTitle>
+              </DialogHeader>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="code">Code</Label>
+                  <Input
+                    id="code"
+                    value={newItem.code}
+                    onChange={(e) => setNewItem({ ...newItem, code: e.target.value })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="category">Category</Label>
+                  <Input
+                    id="category"
+                    value={newItem.category}
+                    onChange={(e) => setNewItem({ ...newItem, category: e.target.value })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="description">Description</Label>
+                  <Input
+                    id="description"
+                    value={newItem.description}
+                    onChange={(e) => setNewItem({ ...newItem, description: e.target.value })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="unit">Unit</Label>
+                  <Input
+                    id="unit"
+                    value={newItem.unit}
+                    onChange={(e) => setNewItem({ ...newItem, unit: e.target.value })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="labour">Labour</Label>
+                  <Input
+                    id="labour"
+                    type="number"
+                    value={newItem.labour}
+                    onChange={(e) => setNewItem({ ...newItem, labour: Number.parseFloat(e.target.value) })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="material">Material</Label>
+                  <Input
+                    id="material"
+                    value={newItem.material}
+                    onChange={(e) => setNewItem({ ...newItem, material: e.target.value })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="plant">Plant</Label>
+                  <Input
+                    id="plant"
+                    value={newItem.plant}
+                    onChange={(e) => setNewItem({ ...newItem, plant: e.target.value })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="publication_price">Publication Price</Label>
+                  <Input
+                    id="publication_price"
+                    type="number"
+                    value={newItem.publication_price}
+                    onChange={(e) => setNewItem({ ...newItem, publication_price: Number.parseFloat(e.target.value) })}
+                  />
+                </div>
+              </div>
+              <Button onClick={addLineItem} className="mt-4">
+                Add Item
+              </Button>
+            </DialogContent>
+          </Dialog>
+          <Input type="file" onChange={importLineItems} accept=".csv" className="inline-block" />
+        </div>
       </div>
       <Table>
         <TableHeader>
@@ -145,7 +203,7 @@ export default function LineItemManagement() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {lineItems.map((item) => (
+          {displayedItems.map((item) => (
             <TableRow key={item.code}>
               <TableCell>{item.code}</TableCell>
               <TableCell>{item.category}</TableCell>
@@ -159,6 +217,17 @@ export default function LineItemManagement() {
           ))}
         </TableBody>
       </Table>
+      <div className="mt-4 flex justify-between items-center">
+        <Button onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage === 1}>
+          Previous
+        </Button>
+        <span>
+          Page {currentPage} of {pageCount}
+        </span>
+        <Button onClick={() => setCurrentPage(currentPage + 1)} disabled={currentPage === pageCount}>
+          Next
+        </Button>
+      </div>
     </div>
   )
 }
